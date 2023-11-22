@@ -16,19 +16,20 @@ describe('FacebookAuthenticationService', () => {
 
   beforeEach(() => {
     facebookUserApi = mock()
-    userAccountRepo = mock()
-    crypto = mock()
-
-    sut = new FacebookAuthenticationService(facebookUserApi, userAccountRepo, crypto)
-
-    userAccountRepo.load.mockResolvedValue(undefined)
-    userAccountRepo.saveWithFacebook.mockResolvedValueOnce({ id: 'any_account_id' })
-
     facebookUserApi.loadUser.mockResolvedValue({
       name: 'any_fb_name',
       email: 'any_fb_email',
       facebookId: 'any_fb_id'
     })
+
+    userAccountRepo = mock()
+    userAccountRepo.load.mockResolvedValue(undefined)
+    userAccountRepo.saveWithFacebook.mockResolvedValue({ id: 'any_account_id' })
+
+    crypto = mock()
+    crypto.generateToken.mockResolvedValue('any_generated_token')
+
+    sut = new FacebookAuthenticationService(facebookUserApi, userAccountRepo, crypto)
   })
 
   it('should call LoadFacebookUserApi with correct params', async () => {
@@ -39,6 +40,8 @@ describe('FacebookAuthenticationService', () => {
   })
 
   it('should return AuthenticationError when LoadFacebookUserApi returns undefined', async () => {
+    facebookUserApi.loadUser.mockResolvedValueOnce(undefined)
+
     const authResult = await sut.perform({ token: 'any_token' })
 
     expect(authResult).toEqual(new AuthenticationError())
@@ -71,6 +74,13 @@ describe('FacebookAuthenticationService', () => {
       key: 'any_account_id',
       expirationInMs: AccessToken.expirationInMs
     })
+    expect(userAccountRepo.saveWithFacebook).toHaveBeenCalledTimes(1)
+  })
+
+  it('should return an AccessToken on success', async () => {
+    const authResult = await sut.perform({ token: 'any_token' })
+
+    expect(authResult).toEqual(new AccessToken('any_generated_token'))
     expect(userAccountRepo.saveWithFacebook).toHaveBeenCalledTimes(1)
   })
 })
