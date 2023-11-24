@@ -27,8 +27,7 @@ describe('pgUserAccountRepository', () => {
 
   describe('load', () => {
     it('should return an user when called with valid email', async () => {
-      const createdPgUser = pgUserRepo.create({ email: 'existing_email' })
-      await pgUserRepo.save(createdPgUser)
+      await pgUserRepo.save({ email: 'existing_email' })
 
       const account = await sut.load({ email: 'existing_email' })
 
