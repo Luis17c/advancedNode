@@ -2,7 +2,7 @@ import { LoadUserAccountRepository, SaveFacebookAccountRepository } from '@/data
 import { PgUser } from '../entities'
 import { getRepository } from 'typeorm'
 
-export class PgUserAccountRepository {
+export class PgUserAccountRepository implements LoadUserAccountRepository, SaveFacebookAccountRepository {
   private readonly pgUserRepo = getRepository(PgUser)
 
   async load (params: LoadUserAccountRepository.Params): Promise<LoadUserAccountRepository.Result> {
