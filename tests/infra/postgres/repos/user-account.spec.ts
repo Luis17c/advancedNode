@@ -1,55 +1,32 @@
-import { LoadUserAccountRepository } from '@/data/contracts/repos'
-import { IBackup, newDb } from 'pg-mem'
-import { Entity, PrimaryGeneratedColumn, Column, getRepository, Repository } from 'typeorm'
+import { PgUser } from '@/infra/postgres/entities'
+import { PgUserAccountRepository } from '@/infra/postgres/repos'
+import { IBackup, IMemoryDb, newDb } from 'pg-mem'
+import { getRepository, Repository, getConnection } from 'typeorm'
 
-class PgUserAccountRepository {
-  async load (params: LoadUserAccountRepository.Params): Promise<LoadUserAccountRepository.Result> {
-    const pgUserRepo = getRepository(PgUser)
-    const pgUser = await pgUserRepo.findOne({ where: { email: params.email } })
-    if (pgUser != undefined) {
-      return {
-        id: pgUser.id.toString(),
-        name: pgUser?.name ?? undefined
-      }
-    }
-  }
-}
-
-@Entity({ name: 'usuarios' })
-class PgUser {
-  @PrimaryGeneratedColumn()
-    id!: number
-
-  @Column({ name: 'nome', nullable: true })
-    name!: string
-
-  @Column()
-    email!: string
-
-  @Column({ name: 'id_facebook', nullable: true })
-    facebookId!: string
+const makeFakeDb = async (entities?: any[]): Promise<IMemoryDb> => {
+  const db = newDb()
+  const connection = await db.adapters.createTypeormConnection({
+    type: 'postgres',
+    entities: entities ?? ['src/infra/postgres/entities/index.ts']
+  })
+  await connection.synchronize()
+  return db
 }
 
 describe('pgUserAccountRepository', () => {
   let sut: PgUserAccountRepository
   let pgUserRepo: Repository<PgUser>
-  let connection: any
   let backup: IBackup
 
   beforeAll(async () => {
-    const db = newDb()
-    connection = await db.adapters.createTypeormConnection({
-      type: 'postgres',
-      entities: [PgUser]
-    })
-    await connection.synchronize()
+    const db = await makeFakeDb([PgUser])
     backup = db.backup()
-    pgUserRepo = connection.getRepository(PgUser)
+    pgUserRepo = getRepository(PgUser)
   })
 
   afterAll(async () => {
     backup.restore()
-    connection.close()
+    await getConnection().close()
   })
 
   beforeEach(() => {
