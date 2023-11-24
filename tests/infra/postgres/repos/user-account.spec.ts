@@ -36,7 +36,7 @@ describe('pgUserAccountRepository', () => {
 
   })
   beforeEach(() => {
-
+    sut = new PgUserAccountRepository()
   })
   describe('load', () => {
     it('should return an user when called with valid email', async () => {
@@ -49,10 +49,24 @@ describe('pgUserAccountRepository', () => {
       const pgUserRepo = connection.getRepository(PgUser)
       const createdPgUser = pgUserRepo.create({ email: 'existing_email' })
       await pgUserRepo.save(createdPgUser)
-      sut = new PgUserAccountRepository()
+
       const account = await sut.load({ email: 'existing_email' })
 
       expect(account).toEqual({ id: '1' })
+      await connection.close()
+    })
+
+    it('should return undefined if email not exists', async () => {
+      const db = newDb()
+      const connection = await db.adapters.createTypeormConnection({
+        type: 'postgres',
+        entities: [PgUser]
+      })
+      await connection.synchronize()
+
+      const account = await sut.load({ email: 'new_email' })
+
+      expect(account).toBe(undefined)
     })
   })
 })
