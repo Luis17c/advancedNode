@@ -10,7 +10,8 @@
         "@typescript-eslint/no-confusing-void-expression": "off",
         "@typescript-eslint/return-await": "off",
         "@typescript-eslint/unbound-method": "off",
-        "eqeqeq": "off"
+        "eqeqeq": "off",
+        "@typescript-eslint/no-non-null-assertion": "off"
       }
     }
   ]
