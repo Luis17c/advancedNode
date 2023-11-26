@@ -3,21 +3,27 @@ import { HttpResponse, badRequest, ok, serverError, unauthorized } from '../help
 import { AccessToken } from '@/domain/models'
 import { RequeridFieldError } from '@/domain/errors'
 
+type HttpRequest = {
+  token: string | undefined | null
+}
+
+type Model = Error | {
+  accessToken: string
+}
+
 export class FacebookLoginController {
   constructor (
     private readonly facebookAuthentication: FacebookAuthentication
   ) {}
 
-  async handle (httpRequest: any): Promise<HttpResponse> {
+  async handle (httpRequest: HttpRequest): Promise<HttpResponse<Model>> {
     try {
       if (httpRequest.token === '' ||
         httpRequest.token === null ||
         httpRequest.token === undefined) {
         return badRequest(new RequeridFieldError('token'))
       }
-
       const accessToken = await this.facebookAuthentication.perform({ token: httpRequest.token })
-
       if (accessToken instanceof AccessToken) {
         return ok({
           accessToken: accessToken.value
@@ -25,8 +31,8 @@ export class FacebookLoginController {
       } else {
         return unauthorized()
       }
-    } catch (err: any) {
-      return serverError(err)
+    } catch (error: any) {
+      return serverError(error)
     }
   }
 }
