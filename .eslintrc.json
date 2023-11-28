@@ -11,7 +11,8 @@
         "@typescript-eslint/return-await": "off",
         "@typescript-eslint/unbound-method": "off",
         "eqeqeq": "off",
-        "@typescript-eslint/no-non-null-assertion": "off"
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/no-misused-promises": "off"
       }
     }
   ]
