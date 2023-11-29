@@ -1,6 +1,7 @@
 import './config/module-alias'
+import 'express-async-errors'
 
-import { app } from './config/app'
+import { app } from '@/main/config/app'
 import { env } from '@/main/config/env'
 
 import 'reflect-metadata'

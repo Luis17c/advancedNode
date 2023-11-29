@@ -21,7 +21,7 @@ type Params = LoadFacebookUserApi.Params
 type Result = LoadFacebookUserApi.Result
 
 export class FacebookApi implements LoadFacebookUserApi {
-  private readonly baseUrl = 'https://graph.facebok.com'
+  private readonly baseUrl = 'https://graph.facebook.com'
   constructor (
     private readonly HttpClient: HttpGetClient,
     private readonly clientId: string,
