@@ -9,7 +9,7 @@ type Setup = (
   UserAccountRepo: LoadUserAccountRepository & SaveFacebookAccountRepository,
   crypto: TokenGenerator
 ) => FacebookAuthentication
-export type FacebookAuthentication = (params: { token: string }) => Promise<AccessToken | AuthenticationError>
+export type FacebookAuthentication = (params: { token: string }) => Promise<{ accessToken: string }>
 
 export const setupFacebookAuthentication: Setup = (FacebookUserApi, UserAccountRepo, crypto) => async params => {
   const fbData = await FacebookUserApi.loadUser(params)
@@ -17,8 +17,8 @@ export const setupFacebookAuthentication: Setup = (FacebookUserApi, UserAccountR
     const accountData = await UserAccountRepo.load({ email: fbData.email })
     const fbAccount = new FacebookAccount(fbData, accountData)
     const { id } = await UserAccountRepo.saveWithFacebook(fbAccount)
-    const token = await crypto.generateToken({ key: id, expirationInMs: AccessToken.expirationInMs })
-    return new AccessToken(token)
+    const accessToken = await crypto.generateToken({ key: id, expirationInMs: AccessToken.expirationInMs })
+    return { accessToken }
   }
-  return new AuthenticationError()
+  throw new AuthenticationError()
 }
