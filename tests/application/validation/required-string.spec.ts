@@ -1,5 +1,5 @@
 import { RequiredStringValidator } from '@/application/validation'
-import { RequeridFieldError } from '@/domain/errors'
+import { RequeridFieldError } from '@/domain/models/errors'
 
 describe('RequiredStringValidator', () => {
   let sut: RequiredStringValidator

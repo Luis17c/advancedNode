@@ -1,4 +1,4 @@
-import { AuthenticationError } from '../errors'
+import { AuthenticationError } from '../models/errors'
 import { AccessToken } from '../models'
 
 export interface FacebookAuthentication {

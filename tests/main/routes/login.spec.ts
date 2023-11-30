@@ -5,7 +5,7 @@ import { getConnection } from 'typeorm'
 import request from 'supertest'
 import { makeFakeDb } from '@/tests/infra/postgres/mocks'
 import { PgUser } from '@/infra/postgres/entities'
-import { UnauthorizedError } from '@/domain/errors'
+import { UnauthorizedError } from '@/domain/models/errors'
 
 describe('Login Routes', () => {
   describe('POST /login/facebook', () => {

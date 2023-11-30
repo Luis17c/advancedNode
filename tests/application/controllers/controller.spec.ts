@@ -1,7 +1,7 @@
 import { Controller } from '@/application/controllers'
 import { HttpResponse } from '@/application/helpers'
 import { ValidationComposite } from '@/application/validation'
-import { ServerError } from '@/domain/errors'
+import { ServerError } from '@/domain/models/errors'
 
 class ControllerStub extends Controller {
   async perform (httpRequest: any): Promise<HttpResponse> {

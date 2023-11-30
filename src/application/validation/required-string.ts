@@ -1,4 +1,4 @@
-import { RequeridFieldError } from '@/domain/errors'
+import { RequeridFieldError } from '@/domain/models/errors'
 
 export class RequiredStringValidator {
   constructor (
