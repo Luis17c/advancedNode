@@ -1,21 +1,36 @@
 import { HttpResponse, forbidden } from '@/application/helpers'
+import { RequiredStringValidator } from '@/application/validation'
 import { ForbiddenError } from '@/domain/models/errors'
+import { Authorize } from '@/domain/use-cases'
 
 type HttpRequest = {
   authorization: string
 }
 
 class AuthenticationMiddleware {
-  async handle (httpRequest: HttpRequest): Promise<HttpResponse<Error>> {
-    return forbidden()
+  constructor (
+    private readonly authorize: Authorize
+  ) {}
+
+  async handle ({ authorization }: HttpRequest): Promise<HttpResponse<Error> | undefined> {
+    const error = new RequiredStringValidator(authorization, 'authorization').validate()
+    if (error !== undefined) return forbidden()
+    await this.authorize({ token: authorization })
   }
 }
 
 describe('AuthenticationMiddleware', () => {
   let sut: AuthenticationMiddleware
+  let authorize: jest.Mock
+  let authorization: string
+
+  beforeAll(() => {
+    authorization = 'any_authorization'
+    authorize = jest.fn()
+  })
 
   beforeEach(() => {
-    sut = new AuthenticationMiddleware()
+    sut = new AuthenticationMiddleware(authorize)
   })
   it('should return 403 if atuhorization is empty', async () => {
     const httpResponse = await sut.handle({ authorization: '' })
@@ -42,5 +57,14 @@ describe('AuthenticationMiddleware', () => {
       statusCode: 403,
       data: new ForbiddenError()
     })
+  })
+
+  it('should call authorize with correct params', async () => {
+    await sut.handle({ authorization })
+
+    expect(authorize).toHaveBeenCalledWith({
+      token: authorization
+    })
+    expect(authorize).toHaveBeenCalledTimes(1)
   })
 })
