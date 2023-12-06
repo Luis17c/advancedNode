@@ -1,5 +1,5 @@
 import { RequiredStringValidator } from '@/application/validation'
-import { RequeridFieldError } from '@/domain/models/errors'
+import { RequiredFieldError } from '@/domain/models/errors'
 
 describe('RequiredStringValidator', () => {
   let sut: RequiredStringValidator
@@ -9,7 +9,7 @@ describe('RequiredStringValidator', () => {
 
     const error = sut.validate()
 
-    expect(error).toEqual(new RequeridFieldError('any_field'))
+    expect(error).toEqual(new RequiredFieldError('any_field'))
   })
 
   it('should return RequiredFieldError if value is null', () => {
@@ -17,7 +17,7 @@ describe('RequiredStringValidator', () => {
 
     const error = sut.validate()
 
-    expect(error).toEqual(new RequeridFieldError('any_field'))
+    expect(error).toEqual(new RequiredFieldError('any_field'))
   })
 
   it('should return RequiredFieldError if value is undefined', () => {
@@ -25,7 +25,7 @@ describe('RequiredStringValidator', () => {
 
     const error = sut.validate()
 
-    expect(error).toEqual(new RequeridFieldError('any_field'))
+    expect(error).toEqual(new RequiredFieldError('any_field'))
   })
 
   it('should return undefined if value is not empty', () => {

@@ -1,4 +1,4 @@
-import { RequeridFieldError } from '@/domain/models/errors'
+import { RequiredFieldError } from '@/domain/models/errors'
 
 export class RequiredStringValidator {
   constructor (
@@ -10,7 +10,7 @@ export class RequiredStringValidator {
     if (this.value === '' ||
       this.value === null ||
       this.value === undefined) {
-      return new RequeridFieldError(this.fieldName)
+      return new RequiredFieldError(this.fieldName)
     }
     return undefined
   }
