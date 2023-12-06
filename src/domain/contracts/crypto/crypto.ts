@@ -14,6 +14,6 @@ export interface TokenValidator {
   validateToken: (params: TokenValidator.Params) => Promise<string>
 }
 
-namespace TokenValidator {
+export namespace TokenValidator {
   export type Params = { token: string }
 }
