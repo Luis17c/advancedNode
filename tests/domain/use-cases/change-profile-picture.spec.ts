@@ -94,4 +94,14 @@ describe('ChangeProfilePicture', () => {
       expect(fileStorage.delete).toHaveBeenCalledTimes(1)
     })
   })
+
+  it('should not call deleteFile when file doesnt exists and saveUSerPicture trhows', async () => {
+    userProfileRepo.savePicture.mockRejectedValueOnce(new Error('any_error'))
+
+    const promise = sut({ id: 'any_id', file: undefined })
+
+    promise.catch(() => {
+      expect(fileStorage.delete).not.toHaveBeenCalled()
+    })
+  })
 })
