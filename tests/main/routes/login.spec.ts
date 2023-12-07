@@ -1,5 +1,4 @@
 import { app } from '@/main/config/app'
-
 import { IBackup } from 'pg-mem'
 import { getConnection } from 'typeorm'
 import request from 'supertest'
@@ -12,7 +11,7 @@ describe('Login Routes', () => {
     let backup: IBackup
     const loadUserSpy = jest.fn()
 
-    jest.mock('@/infra/apis/facebook', () => ({
+    jest.mock('@/infra/gateways/facebook', () => ({
       FacebookApi: jest.fn().mockReturnValue({ loadUser: loadUserSpy })
     }))
 

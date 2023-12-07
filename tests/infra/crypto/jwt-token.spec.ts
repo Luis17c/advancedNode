@@ -1,4 +1,4 @@
-import { JwtTokenHandler } from '@/infra/crypto'
+import { JwtTokenHandler } from '@/infra/gateways'
 import jwt from 'jsonwebtoken'
 
 jest.mock('jsonwebtoken')
@@ -30,7 +30,7 @@ describe('JwtTokenHandler', () => {
     })
 
     it('should call sign with correct params', async () => {
-      await sut.generateToken({
+      await sut.generate({
         key,
         expirationInMs
       })
@@ -40,7 +40,7 @@ describe('JwtTokenHandler', () => {
     })
 
     it('should return a token', async () => {
-      const generatedToken = await sut.generateToken({
+      const generatedToken = await sut.generate({
         key,
         expirationInMs
       })
@@ -51,7 +51,7 @@ describe('JwtTokenHandler', () => {
     it('should rethrow if sign throws', async () => {
       fakeJwt.sign.mockImplementationOnce(() => { throw new Error('token_error') })
 
-      const promise = sut.generateToken({
+      const promise = sut.generate({
         key,
         expirationInMs
       })
@@ -71,7 +71,7 @@ describe('JwtTokenHandler', () => {
     })
 
     it('should call verify with correct params', async () => {
-      await sut.validateToken({
+      await sut.validate({
         token
       })
 
@@ -80,7 +80,7 @@ describe('JwtTokenHandler', () => {
     })
 
     it('should return the key used to sign', async () => {
-      const generatedKey = await sut.validateToken({
+      const generatedKey = await sut.validate({
         token
       })
 
@@ -90,7 +90,7 @@ describe('JwtTokenHandler', () => {
     it('should throw if verify returns null', async () => {
       fakeJwt.verify.mockImplementationOnce(() => null)
 
-      const promise = sut.validateToken({ token })
+      const promise = sut.validate({ token })
 
       await expect(promise).rejects.toThrow()
     })

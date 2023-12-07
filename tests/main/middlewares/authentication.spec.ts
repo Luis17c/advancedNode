@@ -8,9 +8,7 @@ import request from 'supertest'
 
 describe('Authentication Middleware', () => {
   it('should return 403 if authorization header wasnt provided', async () => {
-    app.get('/fake_route', auth, (req, res) => {
-      res.json(req.locals)
-    })
+    app.get('/fake_route', auth)
 
     const { status, body } = await request(app)
       .get('/fake_route')
