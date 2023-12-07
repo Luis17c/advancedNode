@@ -8,3 +8,13 @@ export namespace SaveUserPicture {
   }
   // export type Result = void
 }
+
+export interface LoadUserProfile {
+  load: (params: LoadUserProfile.Params) => Promise<void>
+}
+
+export namespace LoadUserProfile {
+  export type Params = {
+    id: string
+  }
+}
